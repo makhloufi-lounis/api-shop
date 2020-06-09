@@ -55,6 +55,20 @@ class ProductTest extends TestCase
     }
 
     /**
+     * @covers \App\Entity\Product::getReference
+     * @covers \App\Entity\Product::setReference
+     */
+    public function testReferenceAccessors()
+    {
+        $this->assertNull($this->product->getReference());
+        $this->assertInstanceOf(
+            Product::class,
+            $this->product->setReference($ref = "P-".$this->faker->unique()->randomNumber(8))
+        );
+        $this->assertSame($ref, $this->product->getReference());
+    }
+
+    /**
      * @covers \App\Entity\Product::getPrice
      * @covers \App\Entity\Product::setPrice
      */
