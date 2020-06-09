@@ -5,21 +5,32 @@
  * (and its CSS file) in your base layout (base.html.twig).
  */
 
- //Import React
- import React from 'react';
- import ReactDom from 'react-dom';
-
 // any CSS you import will output into a single css file (app.css in this case)
 import '../css/app.css';
+
+//Import React
+import React from 'react';
+import ReactDom from 'react-dom';
+import { Provider } from 'react-redux';
+import { store } from './lib/store';
+import AppContainer from './containers/AppContainer';
 
 // Need jQuery? Install it with "yarn add jquery", then uncomment to import it.
 // import $ from 'jquery';
 
 console.log('Hello Webpack Encore! Edit me in assets/js/app.js');
 
-const App = () => {
-    return <h1>Bonjour à tous</h1>
-};
+
+// Log the initial state
+console.log(store.getState())
+const unsubscribe = store.subscribe(() => console.log(store.getState()))
+
+unsubscribe()
 
 const rootElement = document.querySelector("#app");
-ReactDom.render(<App />, rootElement);
+ReactDom.render(
+    <Provider store={store}>
+        <AppContainer /> 
+    </Provider>, 
+    rootElement
+);
