@@ -5,9 +5,15 @@ namespace App\Entity;
 use App\Repository\ProductRepository;
 use Doctrine\ORM\Mapping as ORM;
 use ApiPlatform\Core\Annotation\ApiResource;
+use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * @ApiResource
+ * @ApiResource(
+ *     normalizationContext={
+ *          "groups"={"product_read"}
+ *     },
+ * )
  * @ORM\Entity(repositoryClass=ProductRepository::class)
  */
 class Product
@@ -16,41 +22,59 @@ class Product
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
+     * @Groups({"product_read"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups({"product_read"})
+     * @Assert\Length(
+     *     min=3, minMessage="Le titre titre faire entre 3 et 255 caractéres",
+     *     max=255, maxMessage="Le titre doit faire entre 3 et 255 caractéres"
+     * )
      */
     private $title;
 
     /**
      * @ORM\Column(type="float")
+     * @Groups({"product_read"})
+     * @Assert\Range(
+     *     min=1, minMessage="Le prix doit être entre 1 et 100 euro",
+     *     max=100, maxMessage="Le prix doit être entre 1 et 100 euro"
+     *  )
      */
     private $price;
 
     /**
      * @ORM\Column(type="text")
+     * @Groups({"product_read"})
+     * @Assert\Length(
+     *     min=3, minMessage="La description doit avoir au mois 3 caractéres",     * )
      */
     private $description;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups({"product_read"})
      */
     private $imageName;
 
     /**
      * @ORM\Column(type="datetime")
+     * @Groups({"product_read"})
      */
     private $createdAt;
 
     /**
      * @ORM\Column(type="datetime", nullable=true)
+     * @Groups({"product_read"})
      */
     private $updatedAt;
 
     /**
      * @ORM\ManyToOne(targetEntity=Category::class, inversedBy="products")
+     * @Groups({"product_read"})
      */
     private $category;
 
