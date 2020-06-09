@@ -85,8 +85,8 @@ const Card = (props) => {
                                     </div>
                                     <div className="col-md-7">
                                         <strong>Possibilité de payer en 3 ou 4 fois :</strong><br/>
-                                        3 fois a partir de <span className="color-red price">10000€</span><br/>
-                                        4 fois a partir de <span className="color-red price">20000€</span>
+                                        3 fois a partir de <span className="color-red price">100€</span><br/>
+                                        4 fois a partir de <span className="color-red price">200€</span>
                                     </div>
                                 </div>
                             </div>
