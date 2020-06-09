@@ -21,6 +21,7 @@ class AppFixtures extends Fixture
         $category->setTitle('Siége Auto');
 
         $product = new Product();
+        $product->setReference("P-".$faker->unique()->randomNumber(8));
         $product->setTitle('Support de tete siege auto');
         $product->setDescription("Le support de tête siege auto offre un véritable confort à votre enfant durant ses trajets. Il évite une mauvaise position et s'adapte à la morphologie de votre enfant.");
         $product->setPrice($faker->randomFloat(2, 20, 50));
