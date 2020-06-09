@@ -27,7 +27,7 @@ const Row = (props) => {
             alt={product.title}
           />
         </td>
-        <td>P-{product.id}</td>
+        <td>{product.reference}</td>
         <td>{product.price}€</td>
         <td>
           <div className="btn-group btn-group-sm ml-3" role="group" aria-label="Basic example">

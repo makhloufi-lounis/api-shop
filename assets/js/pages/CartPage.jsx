@@ -1,21 +1,21 @@
 import React, { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux'
+import { useSelector } from 'react-redux';
 import { Link } from "react-router-dom";
-import Table from '../Componants/Table'
+import Table from '../Componants/Table';
 
 const CartPage = ({qty, setQty}) => {
-    const items = useSelector(state => state.items)
-    const [subTotal, setSubTotal] = useState(0.00)
-    const [total, setTotal] = useState(0.00)
-    const shipping = 10.00
+    const items = useSelector(state => state.items);
+    const [subTotal, setSubTotal] = useState(0.00);
+    const [total, setTotal] = useState(0.00);
+    const shipping = 10.00;
 
     useEffect(() => {
       let totals = items.map(item => {
         return item.quantity * item.details.price
-      })
-      setSubTotal(totals.reduce((item1, item2) => item1 + item2, 0))
-      setTotal(subTotal + shipping)
-    }, [items, subTotal, total])
+      });
+      setSubTotal(totals.reduce((item1, item2) => item1 + item2, 0));
+      setTotal(subTotal + shipping);
+    }, [items, subTotal, total]);
     return (
       <>
         <div className="container mt-5">
@@ -50,15 +50,12 @@ const CartPage = ({qty, setQty}) => {
                 </ul>
               </li>
             </ul>
-            <button
-              type="button"
-              className="btn btn-light btn-lg btn-block mt-1 bg-green"
-              disabled={!items.length}           
-            >
-              <a href="#" className="color-white">
+            <Link
+              to="/checkout"
+              className={`btn btn-light btn-lg btn-block mt-1 bg-green ${!items.length && 'disabled'}`}
+              onClick={ !items.length ? (e) =>  {e.PreventDefault() } :  () => {return true} }>              
                 Passer la commande
-              </a>
-            </button>
+            </Link>
           </div>
         </div>
         </div>

@@ -1,8 +1,12 @@
 import React from 'react';
-import { Link } from "react-router-dom";
+import { Link, Redirect } from "react-router-dom";
 
 const Modal = ({ product, qty }) => {
     
+    const closeModal = (e) => {        
+        $('#modalCart').modal ( "hide" );
+    }
+
     return (
         <div
             className="modal fade"
@@ -53,7 +57,7 @@ const Modal = ({ product, qty }) => {
                     </div>
 
                     <div className="modal-footer">
-                        <Link to="/cart" className="btn btn-success">Panier</Link>
+                        <Link to="/cart" className="btn btn-success" onClick={(e) => closeModal(e)}>Panier</Link>
                         <button
                             type="button"
                             className="btn btn-secondary"
