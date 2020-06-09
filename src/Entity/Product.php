@@ -30,7 +30,17 @@ class Product
      * @ORM\Column(type="string", length=255)
      * @Groups({"product_read"})
      * @Assert\Length(
-     *     min=3, minMessage="Le titre titre faire entre 3 et 255 caractéres",
+     *     min=3, minMessage="La référance doit faire entre 3 et 255 caractéres",
+     *     max=255, maxMessage="La référance doit faire entre 3 et 255 caractéres"
+     * )
+     */
+    private $reference;
+
+    /**
+     * @ORM\Column(type="string", length=255)
+     * @Groups({"product_read"})
+     * @Assert\Length(
+     *     min=3, minMessage="Le titre doit faire entre 3 et 255 caractéres",
      *     max=255, maxMessage="Le titre doit faire entre 3 et 255 caractéres"
      * )
      */
@@ -93,6 +103,25 @@ class Product
     public function getId(): ?int
     {
         return $this->id;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getReference(): ?string
+    {
+        return $this->reference;
+    }
+
+    /**
+     * @param string $reference
+     * @return $this
+     */
+    public function setReference(string $reference): self
+    {
+        $this->reference = $reference;
+
+        return $this;
     }
 
     /**
@@ -227,4 +256,5 @@ class Product
 
         return $this;
     }
+
 }
