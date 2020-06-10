@@ -194,6 +194,13 @@ table {
     padding: 0;
 }
 
+
+/* Checkout */
+
+.form-checkout input {
+    border: 1px solid #ced4da;;
+}
+
 /* utils */
 
 .align-left {
@@ -251,5 +258,9 @@ table {
 
 .bold{
     font-weight: bold;
+}
+
+.disabled {
+    opacity: .65;
 }
 
