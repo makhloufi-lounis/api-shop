@@ -8,6 +8,7 @@ import CartPage from './pages/CartPage';
 import DefaultPage from './pages/DefaultPage';
 import Footer from './Componants/Footer';
 import CheckoutPage from './pages/CheckoutPage';
+import CustomerContextProvider from './lib/CustomerContext';
 
 const App = (props) => {
     const { items, saveLocalStorage } = props;
@@ -27,23 +28,25 @@ const App = (props) => {
 
     return (
         <>
-            <HashRouter>               
-                    <Navbar />            
-                    <main>
-                        <Switch>
-                            <Route exact path="/"> 
-                                <HomePage qty={qty} setQty={setQty} add={add}/>
-                            </Route>
-                            <Route path="/cart">
-                                <CartPage qty={qty} setQty={setQty} />
-                            </Route>
-                            <Route path="/checkout">
-                                <CheckoutPage />
-                            </Route>
-                            <Route component={DefaultPage} />                                    
-                        </Switch>
-                    </main>
-                    <Footer />
+            <HashRouter>  
+                    <CustomerContextProvider>            
+                        <Navbar />            
+                        <main>
+                            <Switch>
+                                <Route exact path="/"> 
+                                    <HomePage qty={qty} setQty={setQty} add={add}/>
+                                </Route>
+                                <Route path="/cart">
+                                    <CartPage qty={qty} setQty={setQty} />
+                                </Route>
+                                <Route path="/checkout">
+                                    <CheckoutPage />
+                                </Route>
+                                <Route component={DefaultPage} />                                    
+                            </Switch>
+                        </main>
+                        <Footer />
+                    </CustomerContextProvider> 
             </HashRouter>
         </>
     )

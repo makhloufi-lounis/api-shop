@@ -1,8 +1,20 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { Link } from "react-router-dom";
+import { CustomerContext } from '../lib/CustomerContext';
 
 export const CheckoutPage = () => {
     const [isValid, setIsValid] = useState(false);
+    const value = useContext(CustomerContext);
+    const {
+        firstName,
+        lastName,
+        email,
+        phone,
+        address,
+        zipCode,
+        city,
+        setCustomerContext
+    } = value;
     const validate = () => {
         let errros = [];
         const inputs = document.querySelectorAll(".form-control");
@@ -12,6 +24,9 @@ export const CheckoutPage = () => {
         setIsValid(!errros.length);
     }
 
+    useEffect(() => {
+        validate()
+    })
 
     return (
         <>
@@ -23,18 +38,22 @@ export const CheckoutPage = () => {
                         <div className="col">
                             <input
                                 type="text"
+                                name="firstName"
                                 className="form-control"
                                 placeholder="Prénom"
                                 property=""
-                                defaultValue="John" />
+                                defaultValue={ firstName } 
+                                onChange={e =>  setCustomerContext({ [e.target.name]: e.target.value})} />
                         </div>
                         <div className="col">
                             <input
                                 type="text"
+                                name="lastName"
                                 className="form-control"
                                 placeholder="Nom"
                                 property=""
-                                defaultValue="Doe" />
+                                defaultValue={ lastName } 
+                                onChange={e =>  setCustomerContext({ [e.target.name]: e.target.value})} />
                         </div>
                     </div>
                     <br/>
@@ -42,11 +61,13 @@ export const CheckoutPage = () => {
                         <div className="col">
                         <input
                             type="email"
+                            name="email"
                             className="form-control"
                             id="inputEmail"
                             placeholder="Address mail"
                             property=""
-                            defaultValue="john@doe.com" />
+                            defaultValue={ email }
+                            onChange={e =>  setCustomerContext({ [e.target.name]: e.target.value})} />
                             <small id="emailHelp" className="form-text color-red">
                                 Nous ne partagerons jamais votre e-mail avec quelqu'un d'autre.
                             </small>
@@ -54,45 +75,53 @@ export const CheckoutPage = () => {
                         <div className="col">
                             <input
                                 type="text"
+                                name="phone"
                                 className="form-control"
                                 placeholder="Téléphone"
                                 property=""
-                                defaultValue="+33123456789" />
+                                defaultValue={ phone }
+                                onChange={e =>  setCustomerContext({ [e.target.name]: e.target.value})} />
                         </div>
                     </div>
                     <br/>
                     <div className="form-group">
                         <input
                             type="text"
+                            name="address"
                             className="form-control"
                             id="inputAddress"
                             placeholder="Adresse"
                             property=""
-                            defaultValue="foo" />
+                            defaultValue={ address } 
+                            onChange={e =>  setCustomerContext({ [e.target.name]: e.target.value})} />
                     </div>
                     <div className="row">
                         <div className="col">
                             <input
                                 type="text"
+                                name="zipCode"
                                 className="form-control"
                                 placeholder="Code postal"
                                 property=""
-                                defaultValue="75000" />
+                                defaultValue={ zipCode } 
+                                onChange={e =>  setCustomerContext({ [e.target.name]: e.target.value})} />
                         </div>
                         <div className="col">
                             <input
                                 type="text"
+                                name="city"
                                 className="form-control"
                                 placeholder="Ville"
                                 property=""
-                                defaultValue="Paris" />
+                                defaultValue={ city } 
+                                onChange={e =>  setUserProfileContext({ [e.target.name]: e.target.value})}/>
                         </div>
                     </div>
                     <br />
                     <button
                         type="button"
                         className={`btn btn-success btn-block bg-green ${ !isValid && 'disabled'}`}
-                        onClick={ !isValid ? (e) =>  {e.PreventDefault() } :  () => {return true} }>
+                        onClick={ !isValid ? (e) =>  { e.PreventDefault() } :  () => {return true} }>
                         <a href="#" className="white">
                             Confirmer
                         </a>
