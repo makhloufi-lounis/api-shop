@@ -23,13 +23,8 @@ const CustomerContextProvider = ({ children }) => {
         setCustomerContext: info =>  
             setCustomer(oldState => ({
                 ...oldState,
-                firstName: info.firstName,
-                lastName: info.lastName,
-                email: info.email,
-                phone: info.phone,
-                address: info.address,
-                zipCode: info.firstName,
-                city: info.city,
+                
+                [Object.keys(info)]: Object.values(info)[0]
         }))
     }
 

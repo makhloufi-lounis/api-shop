@@ -9,6 +9,8 @@ import DefaultPage from './pages/DefaultPage';
 import Footer from './Componants/Footer';
 import CheckoutPage from './pages/CheckoutPage';
 import CustomerContextProvider from './lib/CustomerContext';
+import ConfirmationPage from './pages/ConfirmationPage';
+import ErrorPage from './pages/ErrorPage';
 
 const App = (props) => {
     const { items, saveLocalStorage } = props;
@@ -41,6 +43,12 @@ const App = (props) => {
                                 </Route>
                                 <Route path="/checkout">
                                     <CheckoutPage />
+                                </Route>
+                                <Route path="/confirm">
+                                    <ConfirmationPage />
+                                </Route>
+                                <Route path="/error">
+                                    <ErrorPage />
                                 </Route>
                                 <Route component={DefaultPage} />                                    
                             </Switch>

@@ -6,7 +6,8 @@ export const actions = {
     ADD_TO_CART: "ADD_TO_CART", 
     UPDATE_CART: "UPDATE_CART", 
     REMOVE_FROM_CART: "REMOVE_FROM_CART",
-    SAVE_CART: "SAVE_CART"
+    SAVE_CART: "SAVE_CART",
+    RESET_CART: "RESET_CART"
 }
 
  /**
@@ -25,7 +26,6 @@ export function addtoCart(product, quantity) {
  }
 
  export function updateCart(id, quantity) {
-     console.log(quantity)
      return {
          type : actions.UPDATE_CART, 
          payload : {id: id, quantity: quantity}
@@ -45,3 +45,9 @@ export function addtoCart(product, quantity) {
          payload: {items: items}
      }
  }
+
+ export function resetCart() {
+    return {
+        type: actions.RESET_CART, 
+    }
+}

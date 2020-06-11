@@ -7,7 +7,7 @@ const Card = (props) => {
 
     return (  
         <>
-        <div className="container pt-5">
+        <div className="container pt-3">
             <div className="card">
                 <div className="container-fliud">
                     <div className="wrapper row">

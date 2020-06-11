@@ -1,20 +1,32 @@
 import React, { useState, useEffect, useContext } from 'react';
+import { useSelector } from 'react-redux';
 import { Link } from "react-router-dom";
+import AlmaApiClient from '../lib/AlmaApiClient';
 import { CustomerContext } from '../lib/CustomerContext';
 
 export const CheckoutPage = () => {
+
+    const items = useSelector(state => state.items);
+    const [subTotal, setSubTotal] = useState(0.00);
+    const [total, setTotal] = useState(0.00);
+    const [eligible, setEligible] = useState(true);
+    const [purchaseAmount, setPurchaseAmount] = useState(0.00);
+    const shipping = 10.00;
     const [isValid, setIsValid] = useState(false);
-    const value = useContext(CustomerContext);
+    const [installmentsCount, setInstallmentsCount] = useState(3);
+
+    const customer = useContext(CustomerContext);
     const {
-        firstName,
-        lastName,
-        email,
+        firstName, 
+        lastName, 
+        email, 
         phone,
-        address,
-        zipCode,
-        city,
+        address, 
+        zipCode, 
+        city, 
         setCustomerContext
-    } = value;
+    } = customer
+    
     const validate = () => {
         let errros = [];
         const inputs = document.querySelectorAll(".form-control");
@@ -25,15 +37,40 @@ export const CheckoutPage = () => {
     }
 
     useEffect(() => {
-        validate()
-    })
+        let totals = items.map(item => {
+            return item.quantity * item.details.price
+        });
+        setSubTotal(totals.reduce((item1, item2) => item1 + item2, 0));
+        setTotal(subTotal + shipping);
+        setPurchaseAmount(parseInt(Math.round(total * 100)));
+        validate();
+    }, [customer, installmentsCount, items, subTotal, total]);
+
+    const handleChanche = (event) => {
+        let currentTarget = event.target;
+        const {name, value} =  currentTarget ;
+        setCustomerContext({ [name]: value});
+    }
+
+    const handleSubmit = async event => {
+        event.preventDefault();
+        const data = await AlmaApiClient.paymentsEligibility(purchaseAmount, installmentsCount);
+        setEligible(data.eligible);
+        if(true === eligible) {
+            const data = await AlmaApiClient.createPayment(purchaseAmount, installmentsCount, customer);
+            window.location = data.url;
+        }         
+    }
 
     return (
         <>
             <div className="col-sm-6 offset-3 mt-5">
                 <h2><i className="fa fa-truck mr-1"></i>Adresse de Livraison</h2>
                 <br />
-                <form className="form-checkout">
+                <div className={`alert alert-danger text-center ${!eligible ? 'd-block' : 'd-none'}`} role="alert">
+                    Paiement échoué: Alma est disponible à partir de 100€
+                </div>
+                <form className="form-checkout" method="post" onSubmit={handleSubmit}>
                     <div className="row">
                         <div className="col">
                             <input
@@ -41,9 +78,8 @@ export const CheckoutPage = () => {
                                 name="firstName"
                                 className="form-control"
                                 placeholder="Prénom"
-                                property=""
-                                defaultValue={ firstName } 
-                                onChange={e =>  setCustomerContext({ [e.target.name]: e.target.value})} />
+                                value={ customer.firstName } 
+                                onChange={handleChanche} />
                         </div>
                         <div className="col">
                             <input
@@ -51,9 +87,8 @@ export const CheckoutPage = () => {
                                 name="lastName"
                                 className="form-control"
                                 placeholder="Nom"
-                                property=""
-                                defaultValue={ lastName } 
-                                onChange={e =>  setCustomerContext({ [e.target.name]: e.target.value})} />
+                                value={ customer.lastName } 
+                                onChange={handleChanche} />
                         </div>
                     </div>
                     <br/>
@@ -66,11 +101,8 @@ export const CheckoutPage = () => {
                             id="inputEmail"
                             placeholder="Address mail"
                             property=""
-                            defaultValue={ email }
-                            onChange={e =>  setCustomerContext({ [e.target.name]: e.target.value})} />
-                            <small id="emailHelp" className="form-text color-red">
-                                Nous ne partagerons jamais votre e-mail avec quelqu'un d'autre.
-                            </small>
+                            value={ customer.email }
+                            onChange={handleChanche} />
                         </div>
                         <div className="col">
                             <input
@@ -78,9 +110,8 @@ export const CheckoutPage = () => {
                                 name="phone"
                                 className="form-control"
                                 placeholder="Téléphone"
-                                property=""
-                                defaultValue={ phone }
-                                onChange={e =>  setCustomerContext({ [e.target.name]: e.target.value})} />
+                                value={ customer.phone }
+                                onChange={handleChanche} />
                         </div>
                     </div>
                     <br/>
@@ -92,9 +123,10 @@ export const CheckoutPage = () => {
                             id="inputAddress"
                             placeholder="Adresse"
                             property=""
-                            defaultValue={ address } 
-                            onChange={e =>  setCustomerContext({ [e.target.name]: e.target.value})} />
+                            value={ customer.address } 
+                            onChange={handleChanche} />
                     </div>
+                    <br />
                     <div className="row">
                         <div className="col">
                             <input
@@ -102,9 +134,8 @@ export const CheckoutPage = () => {
                                 name="zipCode"
                                 className="form-control"
                                 placeholder="Code postal"
-                                property=""
-                                defaultValue={ zipCode } 
-                                onChange={e =>  setCustomerContext({ [e.target.name]: e.target.value})} />
+                                value={ customer.zipCode } 
+                                onChange={handleChanche} />
                         </div>
                         <div className="col">
                             <input
@@ -112,20 +143,66 @@ export const CheckoutPage = () => {
                                 name="city"
                                 className="form-control"
                                 placeholder="Ville"
-                                property=""
-                                defaultValue={ city } 
-                                onChange={e =>  setUserProfileContext({ [e.target.name]: e.target.value})}/>
+                                value={ customer.city } 
+                                onChange={handleChanche} />
                         </div>
                     </div>
-                    <br />
-                    <button
-                        type="button"
-                        className={`btn btn-success btn-block bg-green ${ !isValid && 'disabled'}`}
-                        onClick={ !isValid ? (e) =>  { e.PreventDefault() } :  () => {return true} }>
-                        <a href="#" className="white">
-                            Confirmer
-                        </a>
-                    </button>
+                    <br/>
+          
+                    <div className="form-group">
+                        <fieldset className="content-box p-4" style={{border:"1px solid #ced4da"}}>
+                            <legend className="visually-hidden" style={{width:"45%", marginLeft:"20px", paddingLeft:"5px"}}>Choisissez un moyen de paiement</legend>
+                            <div className="radio" style={{border:"1px solid #ced4da", padding: "10px"}}>
+                                <label>
+                                    <input 
+                                        type="radio" 
+                                        name="installmentsCount"
+                                        value={installmentsCount} 
+                                        checked={installmentsCount === 3} 
+                                        onChange={e =>  {setInstallmentsCount(3);}} />
+                                    <img className="ml-2" src={'/images/3x.png'} />
+                                    <div style={{display:'inline-block', right:"50px"}} className="position-absolute">
+                                        <img className="ml-2" src={'/images/iconfinder__Visa_1156753.png'} style={{ height: '20px' }}/>
+                                        <img className="ml-2" src={'/images/iconfinder_206_Mastercard_Credit_Card_4518756.png'} style={{ height: '20px' }}/>
+                                        <img className="ml-2" src={'/images/iconfinder_Americanexpress_american_express_debit_2908221.png'} style={{ height: '20px' }}/>
+                                    </div>
+                                </label>
+                            </div>
+                            <br/>
+                            <div className="radio" style={{border:"1px solid #ced4da", padding: "5px"}}>
+                                <label>
+                                    <input 
+                                        type="radio" 
+                                        name="installmentsCount"
+                                        value={installmentsCount} 
+                                        checked={installmentsCount === 4} 
+                                        onChange={ e =>  {setInstallmentsCount(4)}} />
+                                    <img className="ml-2" src={'/images/4x.png'} />
+                                    <div style={{display:'inline-block', right:"50px"}} className="position-absolute">
+                                        <img className="ml-2" src={'/images/iconfinder__Visa_1156753.png'} style={{ height: '20px' }}/>
+                                        <img className="ml-2" src={'/images/iconfinder_206_Mastercard_Credit_Card_4518756.png'} style={{ height: '20px' }}/>
+                                        <img className="ml-2" src={'/images/iconfinder_Americanexpress_american_express_debit_2908221.png'} style={{ height: '20px' }}/>
+                                    </div>
+                                </label>
+                            </div>
+                        </fieldset>
+                    </div>  
+                    <div className="row">
+                        <div className="col-6">
+                            <Link 
+                                to="/cart"
+                                className="btn btn-link">
+                                   {`<`} Revenir au panier
+                            </Link>
+                        </div>
+                        <div className="col-6">
+                            <button 
+                                type="submit"
+                                className={`btn btn-success btn-block bg-green ${ !isValid && 'disabled'}`}>
+                                    Confirmer
+                            </button>
+                        </div>
+                    </div>
                 </form>
             </div>
       </>

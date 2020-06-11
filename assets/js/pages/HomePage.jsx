@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import Card from '../Componants/Card';
+import ApiShop from '../lib/ApiShop';
 
 
 const HomePage = ({qty, setQty, add}) => {
@@ -8,8 +9,7 @@ const HomePage = ({qty, setQty, add}) => {
     const [product, setProduct] = useState([]);
     
     useEffect(() => {
-        axios.get("http://127.0.0.1:8000/api/products/1")
-        .then(response => setProduct(response.data))
+        ApiShop.setProductById(1, setProduct);
     }, [])
 
     return ( 

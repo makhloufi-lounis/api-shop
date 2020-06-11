@@ -23,8 +23,7 @@ console.log('Hello Webpack Encore! Edit me in assets/js/app.js');
 
 // Log the initial state
 console.log(store.getState())
-const unsubscribe = store.subscribe(() => console.log(store.getState()))
-
+const unsubscribe = store.subscribe(() => console.log(store.getState()));
 unsubscribe()
 
 const rootElement = document.querySelector("#app");
